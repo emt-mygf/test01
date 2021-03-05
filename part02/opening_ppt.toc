@@ -1,0 +1,8 @@
+\beamer@sectionintoc {1}{课题背景}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{命名实体识别}{3}{0}{1}
+\beamer@sectionintoc {2}{课题内容}{8}{0}{2}
+\beamer@subsectionintoc {2}{1}{医疗领域中文命名实体识别}{9}{0}{2}
+\beamer@subsectionintoc {2}{2}{数据集}{14}{0}{2}
+\beamer@subsectionintoc {2}{3}{系统实现}{16}{0}{2}
+\beamer@sectionintoc {3}{计划进度}{17}{0}{3}
+\beamer@sectionintoc {4}{参考文献}{18}{0}{4}
