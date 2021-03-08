@@ -1,11 +1,6 @@
-<<<<<<< HEAD:leetcode/分割回文串.cpp
 #include <string.h>
 #include <vector>
 #include <iostream>
-=======
-#include <iostream>
-#include <vector>
->>>>>>> 0680134a819901ccee79131e6d8dfdb94d56ef2f:leetcode/分割回文串.txt
 using namespace std;
 
 //解1，使用迭代，时间空间占用都大
