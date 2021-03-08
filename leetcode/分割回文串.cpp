@@ -1,3 +1,7 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
 //解1，使用迭代，时间空间占用都大
 
 class Solution {
