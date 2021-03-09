@@ -125,3 +125,39 @@ public:
         return count;
     }
 };
+
+//解3，看了下动态规划，大概懂了，至少这题写出来了（动态规划感觉还是转化化归问题，把问题转化为已经解决过的问题，和递归不同，会按顺序进行，过去计算过的结果会被存储下来重新计算）
+class Solution {
+public:
+    int minCut(string s) {
+        vector<vector<bool>> isPalindromic(s.size(), vector<bool>(s.size(), false));
+        for (int i = s.size() - 1; i >= 0; i--) {
+            for (int j = i; j < s.size(); j++) {
+                if (s[i] == s[j] && (j - i <= 1 || isPalindromic[i + 1][j - 1])) {
+                    isPalindromic[i][j] = true;
+                }
+            }
+        }
+
+        int l = s.length();
+        if(isPalindromic[0][l-1]) return 0;
+        //这里result[i]表示第0->i-1的最少划分次数
+        vector<int> result;
+        result.push_back(-1);
+        result.push_back(0);
+
+        int u;
+        for(int i = 1;i < l; i++){
+            u = result.back()+1;
+            for(int j = 0;j < i; j++){
+                if(isPalindromic[j][i]){
+                    if((result[j]+1) < u) u = result[j]+1;
+                }
+            }
+            result.push_back(u);
+        }
+        return result.back();
+
+    }
+
+};
