@@ -1,0 +1,52 @@
+class Solution {
+public:
+
+    //递归得到All个灯（位数）亮On个的所有可能结果
+    vector<int> getNum(int All,int On){
+        vector<int> ans;
+        //两个递归跳出条件（或）
+        if(On==0){
+            ans.push_back(0);
+            return ans;
+        }
+
+        if(All==On){
+            ans.push_back(pow(2,On)-1);
+            return ans;
+        }
+        
+        //递归过程，分最低位不亮与亮两种情况
+        for(auto i : getNum(All-1, On)) ans.push_back(i*2);
+        for(auto j : getNum(All-1, On-1)) ans.push_back(j*2+1);
+        return ans;
+    }
+
+    //数字转字符串，可能调格式
+    string mystring(int opt, int num){
+        if(opt==1 && num<=9) return '0'+to_string(num);
+        else return to_string(num);
+    }
+
+    vector<string> readBinaryWatch(int turnedOn) {
+        vector<string> strAns;
+        for(int i=0; i<=3; ++i){
+            int j = turnedOn-i;
+            //提前跳出
+            if(j<0) break;
+            if(j<=5){
+                auto hAns = getNum(4, i);
+                auto mAns = getNum(6, j);
+                for(auto hour : hAns){
+                    if(hour<=11){
+                        for(auto min : mAns){
+                            if(min <= 59) strAns.push_back(mystring(0,hour)+':'+mystring(1,min));
+                        }
+                    }
+                }
+            }
+        }
+
+        return strAns;
+    }
+
+};

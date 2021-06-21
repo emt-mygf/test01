@@ -1,0 +1,42 @@
+/** 
+ * Forward declaration of guess API.
+ * @param  num   your guess
+ * @return 	     -1 if num is lower than the guess number
+ *			      1 if num is higher than the guess number
+ *               otherwise return 0
+ * int guess(int num);
+ */
+
+class Solution {
+public:
+    //注意边界条件
+    //这里使用 m=l+(r-l)/2 的方式防止溢出
+    int guessNumber(int n) {
+        int l = 1;
+        int r = n;
+        int m = 1+(n-1)/2;
+        bool flag = true;
+
+        while(flag){
+            switch(guess(m)){
+                case 0:
+                flag = false;
+                break;
+
+                case 1:
+                l = m;
+                m = l+(r-l)/2;
+                flag = l<(r-1);
+                break;
+
+                case -1:
+                r = m;
+                m = l+(r-l)/2;
+                flag = l<(r-1);
+                break;
+            }
+        }
+
+        return guess(m)==0 ? m:r;
+    }
+};

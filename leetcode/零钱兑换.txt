@@ -1,0 +1,23 @@
+class Solution {
+public:
+    //递归解法，把(10,[1,2,5])转化为(10-5*i,[1,2])的问题，超时
+    //动归解法，把(10,[1,2,5])转化为(10,[1,2])和(5,[1,2,5])的问题
+    //具体过程为保留1->10的[]结果
+    //计算1->10的[1]结果并保留
+    //计算1->10的[1,2]结果并保留
+    //......
+    int change(int amount, vector<int>& coins) {
+        if(amount==0) return 1;
+        vector<int> dp;
+        dp.push_back(1);
+        for(int i=0; i<amount; ++i){
+            dp.push_back(0);
+        }
+
+        for(int i=0; i<coins.size(); ++i){
+            int coin = coins[i];
+            for(int j=coin; j<amount+1; ++j) dp[j] += dp[j-coin];
+        }
+        return dp.back();
+    }
+};
