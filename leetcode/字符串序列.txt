@@ -1,0 +1,32 @@
+class Solution {
+public:
+    //dfs回溯思路就是保存现场->进入下一层->恢复现场
+    //需要注意的是如何寻找遍历方案
+    //本题通过n步以内的交换实现遍历
+    //相当于n层的树
+    //string传递引用可以减少重复计算
+    vector<string> permutation(string s) {
+        vector<string> res;
+
+        dfs(res,s,0);
+       
+        return res;
+    }
+
+    void  dfs(vector<string> &res,string &s,int pos){
+        set<char> ms;
+        // cout<<s<<pos<<endl;
+
+        if(pos == s.size())
+            res.push_back(s);
+
+        for(int i=pos;i<s.size();++i){
+            char r = s[i];
+            if(ms.count(r) != 0) continue;
+            ms.insert(r);
+            swap(s[pos],s[i]);
+            dfs(res,s,pos+1);
+            swap(s[pos],s[i]);
+        }
+    }
+};
