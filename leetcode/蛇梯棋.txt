@@ -1,0 +1,60 @@
+//广度优先搜索
+//棋子遇到梯子跳转，下回合会摇数字1-6
+//如果跳转目标是个跳转，则下回合仍摇数字1-6，属于非正常访问
+//我们对每个节点的正常访问和非正常访问各只需要做一次（当然可以多次访问，对结果无影响，对效率影响不大）
+
+class Solution {
+public:
+
+    int get_x(int num, int N) {
+        int x = N-1-((num-1)/N);
+        return x;
+    }
+
+    int get_y(int num, int N) {
+        int flag = ((num-1)/N) % 2;
+        int y = 0;
+        if(flag == 0) y = (num-1) % N;
+        else y = N-1-((num-1) % N);
+        return y;
+    }
+
+    int snakesAndLadders(vector<vector<int>>& board) {
+        queue<pair<int,int>> ans;
+
+        int N = board.size();
+        int end = N*N;
+        vector<int> got(end);
+
+        pair<int,int>res(1,0);
+        got[0]=1;
+        ans.push(res);
+
+        while(ans.size()>0) {
+            int start = ans.front().first;
+            int count = ans.front().second;
+            // cout<<start<<" "<<count<<" "<<board[get_x(start,N)][get_y(start,N)]<<endl;
+            // if(board[get_x(start,N)][get_y(start,N)] != -1) start = board[get_x(start,N)][get_y(start,N)];
+            for(int i=1; i<=6; ++i) {
+                if(start+i > N*N) break;
+                if(got[start+i-1]==1) continue;
+                got[start+i-1]=1;
+
+                if(board[get_x(start+i,N)][get_y(start+i,N)] != -1) {
+                    if(got[board[get_x(start+i,N)][get_y(start+i,N)]-1]==2) continue;
+                    got[board[get_x(start+i,N)][get_y(start+i,N)]-1]=2;
+                    if(board[get_x(start+i,N)][get_y(start+i,N)]==end) return count+1;
+                    pair<int,int>res1(board[get_x(start+i,N)][get_y(start+i,N)],count+1);
+                    ans.push(res1);
+                }
+                else {
+                    if(start+i==end) return count+1;
+                    pair<int,int>res2(start+i,count+1);
+                    ans.push(res2);
+                } 
+            }
+            ans.pop();
+        }
+        return -1;
+    }
+};
