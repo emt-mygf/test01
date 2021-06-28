@@ -1,0 +1,60 @@
+//广度优先搜索，使用队列
+//队列里存储（车站，线路数）
+//更新过程为：取出队列头，找出车站能走的（未走过的）新线路，从这些线路中，找到（未走过的）车站，将（新车站，线路数+1）存进队列
+//通过map结构可以存储车站能走的线路，减少重复寻找各车站能走线路的复杂度
+class Solution {
+public:
+    int numBusesToDestination(vector<vector<int>>& routes, int source, int target) {
+        if(target == source) return 0;
+
+        set<int> r_passed;
+        set<int> s_passed;
+        queue<pair<int,int>> bfs;
+
+        pair<int,int> res(source,0);
+        bfs.push(res);
+        s_passed.insert(source);
+
+        //关键，实现车站到路线的检索，极大降低复杂度
+        map<int, vector<int>> get_routes;
+        for(int i=0; i<routes.size(); ++i) {
+            vector<int> route(routes[i]);
+            for(auto s:route) {
+                map<int, vector<int>>::iterator it = get_routes.find(s);
+                if(it != get_routes.end()) it->second.push_back(i);
+                else {
+                    vector<int> r = {i};
+                    pair<int, vector<int>> g = {s, r};
+                    get_routes.insert(g);
+                }
+            }
+        }
+
+        while(bfs.size()>0) {
+            int station = bfs.front().first;
+            int count = bfs.front().second;
+
+            map<int, vector<int>>::iterator it = get_routes.find(station);
+            vector<int> my_routes = it->second;
+            for(auto i:my_routes) {
+                if(r_passed.count(i) > 0) continue;
+
+                vector<int> route(routes[i]);
+                for(auto s:route) {
+                    if(s == target) return count+1;
+
+                    if(s_passed.count(s) > 0) continue;
+                    
+                    res = {s, count+1};
+                    bfs.push(res);
+                    s_passed.insert(s);
+                }
+                r_passed.insert(i);
+            }
+
+            bfs.pop();
+        }
+
+        return -1;
+    }
+};
