@@ -1,0 +1,20 @@
+//可以提前对输入的整数减一，将映射改为[A->Z]->[0->25]
+//algorithm中的reverse函数挺好用
+class Solution {
+public:
+    string convertToTitle(int columnNumber) {
+        string s;
+        while(true) {
+            --columnNumber;
+            int a = columnNumber % 26 + 'A';
+            char b = a;
+            s += b;
+            columnNumber = columnNumber/26;
+
+            if(columnNumber == 0) break;
+        }
+
+        reverse(s.begin(),s.end());
+        return s;
+    }
+};
