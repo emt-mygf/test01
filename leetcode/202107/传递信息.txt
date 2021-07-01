@@ -1,0 +1,48 @@
+class Solution {
+public:
+    int numWays(int n, vector<vector<int>>& relation, int k) {
+        int count = 0;
+        queue<pair<int, int>> bfs;
+
+        //统计信息传递链，方便查找，本题中k, relation等较小，用处不大
+        map<int, vector<int>> mem;
+        for(auto re: relation) {
+            map<int, vector<int>>::iterator it = mem.find(re[0]);
+            if(it == mem.end()) {
+                vector<int> hit{re[1]};
+                pair<int, vector<int>> res(re[0], hit);
+                mem.insert(res);
+            }
+            else {
+                it->second.push_back(re[1]);
+            }
+        }
+
+        //初始化
+        pair<int, int> init(0, 0);
+        bfs.push(init);
+        while(true) {
+            // cout<<"bfs "<<bfs.size()<<endl;
+            int stay = bfs.front().first;
+            int step = bfs.front().second;
+            // cout<<"stay "<<stay<<" step "<<step<<endl;
+
+            //退出条件,统计count在上一层完成，此处直接退出
+            if(step == k) break;
+
+            map<int, vector<int>>::iterator get = mem.find(stay);
+            //防止某节点没有信息发出通道，得有个判断（和公交路线不同，这里有个方向性）
+            if(get != mem.end()) {
+                vector<int> nexts = get->second;
+                for(auto next: nexts) {
+                    // cout<<"next "<<next<<endl;
+                    pair<int, int> p(next, step+1);
+                    bfs.push(p);
+                    if(step+1 == k && next== n-1) ++count;
+                }
+            }
+            bfs.pop();
+        }
+        return count;
+    }
+};
