@@ -1,0 +1,19 @@
+//这是中等题？
+//不过是调用api的，说起来我不会手写快排了，得练练
+class Solution {
+public:
+    int maxIceCream(vector<int>& costs, int coins) {
+        int count=0;
+        int maxnum=0;
+
+        sort(costs.begin(), costs.end());
+        for(int i=0; i<costs.size(); ++i) {
+            count+=costs[i];
+            if(count > coins) break;
+
+            maxnum+=1;
+        }
+
+        return maxnum;
+    }
+};
