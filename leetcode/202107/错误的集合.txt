@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<int> findErrorNums(vector<int>& nums) {
+        int l = nums.size();
+        vector<int> ivec(l, 1);
+        vector<int> ans(2);
+
+        for(auto n:nums) ivec[n-1] -= 1;
+
+        int c = 2;
+        for(int i=0; i<l; ++i) {
+            if(c == 0) break;
+
+            if(ivec[i] == -1) {
+                ans[0] = i+1;
+                --c;
+            }
+            else if(ivec[i] == 1) {
+                ans[1] = i+1;
+                --c;
+            }
+        }
+
+        return ans;
+    }
+};
