@@ -1,0 +1,84 @@
+class Solution {
+public:
+    //字符串->字典
+    map<string, int> stom(string input) {
+        map<string, int> ans;
+
+        //边界条件
+        if(input.size() == 0) return ans;
+
+        int i = 0;
+        while(i < input.size()) {
+            char i_get = input[i];
+            string atom(1, i_get);
+            string s_num;
+            int j = i+1;
+            while(j < input.size()) {
+                char j_get = input[j];
+                if(j_get.islower()) {
+                    atom += j_get;
+                }
+                else if(j_get.isdigit()) {
+                    s_num += j_get;
+                }
+                else if(j_get.isupper()) {
+                    if(s_num.size() == 0) s_num += '1';
+
+                    int num = stoi(s_num);
+                    map<string, int>::iterator it = ans.find(atom);
+                    if(it == ans.end()) {
+                        pair<string, int> init(atom, num);
+                        ans.insert(init);
+                    }
+                    else {
+                        it->second += num;
+                    }
+
+                    break;
+                }
+
+                ++j;
+            }
+            
+            i = j;
+            if(i == input.size() && atom.size() > 0) {
+                if(s_num.size() == 0) s_num += '1';
+
+                int num = stoi(s_num);
+                map<string, int>::iterator it = ans.find(atom);
+                if(it == ans.end()) {
+                    pair<string, int> init(atom, num);
+                    ans.insert(init);
+                }
+                else {
+                    it->second += num;
+                }
+
+            }  
+        }
+
+        return ans;
+    }
+
+    string countOfAtoms(string formula) {
+        //初始化
+        stack<map<string, int>> get_ans;
+        map<string, int> get_init;
+        get_ans.push(get_init);
+
+        int s = 0;
+        while(s < formula.size()) {
+            int e = s;
+            while(e < formula.size()) {
+                char f_get = formula[e];
+                if(f_get == '(') {
+                    //第一步，修改栈顶
+                    get_ans.top = stom(formula.substr(s, e-s));
+
+                    map<
+                }
+                ++e;
+            }
+        }
+    }
+};
