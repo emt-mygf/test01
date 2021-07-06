@@ -1,3 +1,5 @@
+//1.无括号的字符串转换成字典
+//2.用栈，注意处理好括号的逻辑
 class Solution {
 public:
     //字符串->字典
@@ -15,13 +17,13 @@ public:
             int j = i+1;
             while(j < input.size()) {
                 char j_get = input[j];
-                if(j_get.islower()) {
+                if(islower(j_get)) {
                     atom += j_get;
                 }
-                else if(j_get.isdigit()) {
+                else if(isdigit(j_get)) {
                     s_num += j_get;
                 }
-                else if(j_get.isupper()) {
+                else if(isupper(j_get)) {
                     if(s_num.size() == 0) s_num += '1';
 
                     int num = stoi(s_num);
@@ -60,25 +62,116 @@ public:
         return ans;
     }
 
+    //map合并，用于栈顶元素的修改，栈的修剪
+    map<string, int> concat(map<string, int> input1, map<string, int> input2) {
+        //边界条件
+        if(input1.size() == 0) return input2;
+        else if(input2.size() == 0) return input1;
+
+        map<string, int> ans;
+
+        //插入input1的内容，如果和input2有相同原子，求和
+        map<string, int>::iterator it1 = input1.begin();
+        while(it1 != input1.end()) {
+            map<string, int>::iterator f_it2 = input2.find(it1->first);
+            if(f_it2 != input2.end()) {
+                pair<string, int> init(it1->first, it1->second+f_it2->second);
+                ans.insert(init);
+            }
+            else ans.insert(*it1);
+
+            ++it1;
+        }
+
+        //插入input2的内容，如果和input1有相同原子，跳过（因为已经计算过）
+        map<string, int>::iterator it2 = input2.begin();
+        while(it2 != input2.end()) {
+            map<string, int>::iterator f_it1 = input1.find(it2->first);
+            if(f_it1 == input1.end()) ans.insert(*it2);
+            
+            ++it2;
+        }
+
+        return ans;
+    }
+
     string countOfAtoms(string formula) {
         //初始化
         stack<map<string, int>> get_ans;
         map<string, int> get_init;
         get_ans.push(get_init);
 
+        //两个指针，start and end
         int s = 0;
         while(s < formula.size()) {
             int e = s;
             while(e < formula.size()) {
                 char f_get = formula[e];
                 if(f_get == '(') {
-                    //第一步，修改栈顶
-                    get_ans.top = stom(formula.substr(s, e-s));
+                    //第一步，用左边的字符串修改栈顶
+                    get_ans.top() = concat(get_ans.top(), stom(formula.substr(s, e-s)));
 
-                    map<
+                    //第二步，压栈新空map（栈顶占位，栈长加一）
+                    map<string, int> bra_init;
+                    get_ans.push(bra_init);
+
+                    //第三步，跳出内层循环
+                    s = e+1;
+                    break;
+                }
+
+                if(f_get == ')') {
+                    //第一步，用左边的字符串修改栈顶
+                    get_ans.top() = concat(get_ans.top(), stom(formula.substr(s, e-s)));
+
+                    //第二步，结合右边的数字进行栈顶元素与第二个元素的合并（栈长减一）
+                    int n_e = e+1;
+                    string s_num;
+                    while(n_e < formula.size()) {
+                        char n_get = formula[n_e];
+                        if(isdigit(n_get)) s_num += n_get;
+                        else break;
+                        ++n_e;
+                    }
+                    if(s_num.size() == 0) s_num += '1';
+
+                    int num = stoi(s_num);
+                    map<string, int> t1 = get_ans.top();
+                    get_ans.pop();
+                    //栈顶字典每个value要乘以右括号后边的数字
+                    map<string, int>::iterator t_it = t1.begin();
+                    while(t_it != t1.end()) {
+                        t_it->second *= num;
+                        ++t_it;
+                    }
+
+                    get_ans.top() = concat(get_ans.top(), t1);
+
+                    //第三步，跳出内层循环
+                    s = n_e;
+                    break;
+
                 }
                 ++e;
             }
+
+            //化学式最右边的部分，此时s->e-s刚好是最后的子串，修改栈顶元素后跳出外层循环
+            if(e == formula.size()) {
+                get_ans.top() = concat(get_ans.top(), stom(formula.substr(s, e-s)));
+                break;
+            }
         }
+
+        //字典转为字符串
+        string result;
+        map<string, int> get_res = get_ans.top();
+        map<string, int>::iterator res_it = get_res.begin();
+        while(res_it != get_res.end()) {
+            result += res_it->first;
+            if(res_it->second > 1) result += to_string(res_it->second);
+            ++res_it;
+        }
+
+        return result;
     }
 };
