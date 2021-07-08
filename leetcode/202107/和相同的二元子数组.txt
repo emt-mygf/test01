@@ -52,3 +52,37 @@ public:
         return ans;
     }
 };
+
+//前缀和+哈希加速
+class Solution {
+public:
+    //前缀和方法，哈希加速
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+        int ans = 0;
+        int sum = 0;
+        //初始化
+        map<int, int> hash;
+        pair<int, int> init(0, 1);
+        hash.insert(init);
+
+        for(auto num:nums) {
+            sum += num;
+
+            //先更新结果
+            map<int, int>::iterator distance = hash.find(sum-goal);
+            if(distance != hash.end()) ans += distance->second;
+
+            //更新哈希
+            map<int, int>::iterator it = hash.find(sum);
+            if(it == hash.end()) {
+                pair<int, int> init(sum, 1);
+                hash.insert(init);
+            }
+            else {
+                it->second += 1;
+            }
+
+        }
+        return ans;
+    }
+};
