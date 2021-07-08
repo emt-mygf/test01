@@ -1,0 +1,54 @@
+//滑动窗口方法
+class Solution {
+public:
+    //使用头尾两个指针，将题目转为数学问题
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+        //头
+        int s = 0;
+        int ans = 0;
+        queue<int> myq;
+        while(s < nums.size()) {
+            //尾
+            int e = s;
+            while(e < nums.size()) {
+                if(nums[e] == 1) {
+                    //goal=0解法不同
+                    if(goal > 0) {
+                        int l = e-s+1;
+                        myq.push(l);
+                        //a个0 + goal个1（里面有0）+ b个0，能得到(a+1)*(b+1)个组合
+                        if(myq.size() == goal+1) {
+                            ans += myq.front()*l;
+                            myq.pop();
+                        }
+                    }
+                    else {
+                        int l = e-s;
+                        ans += l*(l+1)/2;
+                    }
+                    s = e+1;
+                }
+
+                ++e;
+            }
+
+            if(e == nums.size()) {
+                if(goal > 0) {
+                    int l = e-s+1;
+                    myq.push(l);
+                    if(myq.size() == goal+1) {
+                        ans += myq.front()*l;
+                        myq.pop();
+                    }
+                }
+                else {
+                    int l = e-s;
+                    ans += l*(l+1)/2;
+                }
+                s = e+1;
+            }
+        }
+
+        return ans;
+    }
+};
