@@ -1,0 +1,28 @@
+class Solution {
+public:
+    //摩尔投票法才能达到O(1)空间复杂度，这是简单题？
+    int majorityElement(vector<int>& nums) {
+        //初始化
+        int ans = -1;
+        int count = 0;
+        for(auto num : nums) {
+            if(num == ans) ++count;
+            else {
+                --count;
+                if(count < 0) {
+                    ans = num;
+                    count = 1;
+                }
+            }
+        }
+
+        //验证
+        int c = 0;
+        for(auto num : nums) {
+            if(num == ans) ++c;
+        }
+        if(c <= nums.size()-c) return -1;
+
+        return ans;
+    }
+};
