@@ -1,0 +1,68 @@
+//本题主要是知道了要善用引用传递，值传递有时候太耗时
+//然后是知道了操作[]的好用之处（不存在会自动初始化）
+class TimeMap {
+//hash用unordered_map, map是有序的
+public:
+    /** Initialize your data structure here. */
+    unordered_map<string, map<int, string> > memory;
+    TimeMap() {}
+    
+    void set(string key, string value, int timestamp) {
+        memory[key].insert({timestamp, value});
+    }
+    
+    string get(string key, int timestamp) {
+        string ans;
+        //传引用，相当于重命名
+        map<int, string> &it = memory[key];
+        //直接调用api
+        //upper_bound会返回大于（严格）目标的第一个值
+        map<int, string>::iterator got = it.upper_bound(timestamp);
+        if(got != it.begin()) {
+            --got;
+            ans = got->second;
+        }
+
+        return ans;
+    }
+};
+
+class TimeMap {
+//hash用unordered_map
+public:
+    /** Initialize your data structure here. */
+    unordered_map<string, vector<pair<int, string> > > memory;
+    TimeMap() {}
+    
+    void set(string key, string value, int timestamp) {
+        memory[key].emplace_back(timestamp, value);
+    }
+    
+    string get(string key, int timestamp) {
+        //传引用，赋值会超时
+        auto &got = memory[key];
+        //二分查找
+        if(got.size() == 0) return "";
+
+        int l = 0;
+        int r = got.size()-1;
+        if(got[l].first > timestamp) return "";
+        else if(got[l].first == timestamp) return got[l].second;
+        else if(got[r].first <= timestamp) return got[r].second;
+        else while(l < r-1) {
+            int m = l + (r-l)/2;
+            if(got[m].first == timestamp) return got[m].second;
+            else if(got[m].first < timestamp) l = m;
+            else r = m;
+        }
+        return got[r].first == timestamp ? got[r].second : got[l].second;
+        
+    }
+};
+
+/**
+ * Your TimeMap object will be instantiated and called as such:
+ * TimeMap* obj = new TimeMap();
+ * obj->set(key,value,timestamp);
+ * string param_2 = obj->get(key,timestamp);
+ */
