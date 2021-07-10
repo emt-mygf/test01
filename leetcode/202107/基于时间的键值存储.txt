@@ -55,7 +55,7 @@ public:
             else if(got[m].first < timestamp) l = m;
             else r = m;
         }
-        return got[r].first == timestamp ? got[r].second : got[l].second;
+        return got[l].second;
         
     }
 };
