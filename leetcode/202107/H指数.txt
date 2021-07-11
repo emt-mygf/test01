@@ -1,0 +1,28 @@
+class Solution {
+public:
+    //先排序，再二分，注意边界条件
+    int hIndex(vector<int>& citations) {
+        sort(citations.begin(), citations.end(), greater<int>());
+        int l = 0;
+        int r = citations[0];
+
+        //边界条件
+        if(r == 0) return 0;
+
+        while(r-l > 1) {
+            int m = l + (r-l)/2;
+            int flag = 0;
+            //要求的是满足条件的最大的值，因此缩减右界的条件相对严格
+            if(m > citations.size()) flag = 1;
+            else if(citations[m-1] < m) flag = 1;
+            
+            if(flag == 1) r = m;
+            else l = m;
+        }
+
+        //边界条件
+        if(r > citations.size()) return citations.size();
+
+        return citations[r-1] >= r ? r : l;
+    }
+};
