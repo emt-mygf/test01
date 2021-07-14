@@ -2,7 +2,7 @@ class Solution {
 public:
     //相比之前的提交，整体思路没变，但是逻辑优化了一下，不倒腾来倒腾去了（之前多遍历了几次，只能说复杂度数量级没变）
     int minAbsoluteSumDiff(vector<int>& nums1, vector<int>& nums2) {
-        int mod = (int)(1e9+7);
+        static const int mod = (int)(1e9+7);
         int l = nums1.size();
         //统计信息
         set<int> nums(nums1.begin(), nums1.end());
@@ -13,6 +13,8 @@ public:
             //绝对差值，都得加进去
             int get = abs(nums1[i] - nums2[i]);
             ans = (ans + get) % mod;
+            //优化
+            if(get <= maxn) continue;
             auto find = nums.lower_bound(nums2[i]);
             //maxn存储(绝对差值-最小绝对差值)的最大值，最后把他减了就得到最终结果
             if(find != nums.end()) maxn = max(maxn, get - *find + nums2[i]);
