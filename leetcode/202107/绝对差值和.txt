@@ -1,3 +1,4 @@
+//当 某个位置的绝对差值 不大于 已知的能减掉的最大值 时，不用考虑这个位置的检索了
 class Solution {
 public:
     //相比之前的提交，整体思路没变，但是逻辑优化了一下，不倒腾来倒腾去了（之前多遍历了几次，只能说复杂度数量级没变）
@@ -22,6 +23,45 @@ public:
                 --find;
                 maxn = max(maxn, get - nums2[i] + *find);
             }
+        }
+
+        ans = (ans - maxn + mod) % mod;
+        return ans;
+    }
+};
+
+//手写二分可以中途跳出循环，在检索过程中减少时间
+class Solution {
+public:
+    //相比之前的提交，整体思路没变，但是逻辑优化了一下，不倒腾来倒腾去了（之前多遍历了几次，只能说复杂度数量级没变）
+    int minAbsoluteSumDiff(vector<int>& nums1, vector<int>& nums2) {
+        static const int mod = (int)(1e9+7);
+        int l = nums1.size();
+        //统计信息
+        vector<int> nums(nums1);
+        sort(nums.begin(), nums.end());
+
+        int ans = 0;
+        int maxn = 0;
+        for(int i = 0; i < l; ++i) {
+            //绝对差值，都得加进去
+            int get = abs(nums1[i] - nums2[i]);
+            ans = (ans + get) % mod;
+            //优化
+            if(get <= maxn) continue;
+            //手写二分法
+            int s = 0;
+            int e = l - 1;
+            while(s < e-1) {
+                int m = s + (e-s)/2;
+                if(nums[m] == nums2[i]) {
+                    maxn = max(maxn, get);
+                    break;
+                }
+                else if(nums[m] > nums2[i]) e = m;
+                else s = m;
+            }
+            maxn = max(maxn, get - min(abs(nums2[i] - nums[s]), abs(nums[e] - nums2[i])));
         }
 
         ans = (ans - maxn + mod) % mod;
