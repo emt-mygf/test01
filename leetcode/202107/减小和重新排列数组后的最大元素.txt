@@ -1,0 +1,14 @@
+class Solution {
+public:
+    int maximumElementAfterDecrementingAndRearranging(vector<int>& arr) {
+        //爷不统计了
+        //排序下就行
+        sort(arr.begin(), arr.end());
+
+        int ans = 0;
+        //贪心
+        for(auto a : arr) ans = min(a, ans + 1);
+
+        return ans;
+    }
+};
