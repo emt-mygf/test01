@@ -1,0 +1,80 @@
+//两种思路，一种是计算上下边界作差，另一种是计算下边界然后向后遍历（上边界则向左遍历），哪个好得看数据的特性
+//还有种思路，可以先求下边界，再以下边界->结尾为输入求上边界
+//在写二分法求边界的时候，可以初始化上下边界为-1,size,这样可以减少边界条件的判断;也可以初始化上下边界为0,size-1,每改一个需要加一个边界条件的判断
+//边界条件对性能的影响，类似于计算机的层次结构，看命中率;同时如果最终要用到索引，初始化在不越界的范围可能更方便
+
+//求上下边界
+class Solution {
+public:
+    int lb(vector<int>& nums, int target) {
+        //边界条件
+        if(nums.size() == 0) return 0;
+
+        int u = -1, v = nums.size();
+
+        //二分
+        while(u < v-1) {
+            int m = u + (v-u)/2;
+            if(nums[m] < target) u = m;
+            else v = m;
+        }
+
+        return v;
+    }
+
+    int ub(vector<int>& nums, int target) {
+        //边界条件
+        if(nums.size() == 0) return 0;
+
+        int u = -1, v = nums.size();
+
+        //二分
+        while(u < v-1) {
+            int m = u + (v-u)/2;
+            if(nums[m] > target) v = m;
+            else u = m;
+        }
+
+        return v;
+    }
+
+    int search(vector<int>& nums, int target) {
+        return ub(nums, target) - lb(nums, target);
+    }
+};
+
+//只求单边界
+class Solution {
+public:
+    int lb(vector<int>& nums, int target) {
+        //边界条件
+        if(nums.size() == 0) return 0;
+        if(nums[0] >= target) return 0;
+
+        // //v相当于指向nums.end(),可以减少一个边界条件的判断
+        // int u = 0, v = nums.size();
+        int u = 0, v = nums.size()-1;
+        if(nums[v] < target) return v+1;
+
+        //二分
+        while(u < v-1) {
+            int m = u + (v-u)/2;
+            if(nums[m] < target) u = m;
+            else v = m;
+        }
+
+        return v;
+    }
+    
+    int search(vector<int>& nums, int target) {
+        int ans = 0;
+        int s = lb(nums, target);
+        while(s < nums.size()) {
+            if(nums[s] == target) ++ans;
+            else break;
+            ++s;
+        }
+
+        return ans;
+    }
+};
