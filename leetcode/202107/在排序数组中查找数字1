@@ -78,3 +78,14 @@ public:
         return ans;
     }
 };
+
+//提到的第三种思路，优化版
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int ans = 0;
+        auto it1 = lower_bound(nums.begin(), nums.end(), target);
+        auto it2 = upper_bound(it1, nums.end(), target);
+        return it2 - it1;
+    }
+};
