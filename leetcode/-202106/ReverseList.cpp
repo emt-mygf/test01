@@ -2,6 +2,8 @@
 #include <iostream>
 #include <stack>
 #include <string>
+#include <algorithm>
+#include <sstream>
 using namespace std;
 
 /**
